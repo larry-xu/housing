@@ -51,38 +51,28 @@
 
     <script>
 
-      var yearStart = 2009;
-      var minIdx = 0;
-      var maxIdx = 7;
+      var minYear = 2006;
+      var maxYear = 2016;
 
-      function changeLegend(idx) {
-        $('#legend').html('Year: ' + (yearStart + idx));
+      function changeLegend(year) {
+        $('#legend').html('Year: ' + year);
       }
 
-      function showSubLayer(layer, idx) {
-        for (var i = 0; i < layer.getSubLayerCount(); i++) {
-          if (i === idx) {
-            layer.getSubLayer(i).show();
-          } else {
-            layer.getSubLayer(i).hide();
-          }
-        }
-      }
+      function addTimeSlider(sublayer) {
+        sublayer.setSQL('SELECT * FROM dhi_cities_geo WHERE year = ' + maxYear);
+        changeLegend(maxYear);
 
-      function addTimeSlider(layer) {
         $("#slider").slider({
-          min: minIdx,
-          max: maxIdx,
-          value: minIdx,
+          min: minYear,
+          max: maxYear,
+          value: maxYear,
           slide: function(event, ui) {
             // give feedback to the user on slide change
             console.log(ui.value);
-            showSubLayer(layer, ui.value)
+            sublayer.setSQL('SELECT * FROM dhi_cities_geo WHERE year = ' + ui.value);
             changeLegend(ui.value);
           },
         });
-        showSubLayer(layer, minIdx);
-        changeLegend(minIdx);
       }
 
       function main() {
@@ -96,11 +86,11 @@
           attribution: 'CartoDB · OSM data'
         }).addTo(map);
 
-        cartodb.createLayer(map, '//larryxu.carto.com/api/v2/viz/51bc7dc4-a630-11e6-8f2b-0e05a8b3e3d7/viz.json')
+        cartodb.createLayer(map, '//larryxu.carto.com/api/v2/viz/59882764-ba90-11e6-84fe-0e05a8b3e3d7/viz.json')
          .addTo(map)
          .on('done', function(layer) {
            // add time slider on change
-           addTimeSlider(layer);
+           addTimeSlider(layer.getSubLayer(0));
         }).on('error', function() {
           cartodb.log.log("some error occurred");
         });
