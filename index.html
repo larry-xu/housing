@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Housing Affordability Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <style>
+      html, body, #map {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      #title {
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 24px;
+        position: absolute;
+        top: 40px;
+        left: 40px;
+      }
+
+      #slider {
+        position: absolute;
+        bottom: 40px;
+        left: 40px;
+        width: 400px;
+      }
+
+      #legend {
+        font-family: sans-serif;
+        font-size: 18px;
+        position: absolute;
+        bottom: 80px;
+        left: 40px;
+      }
+    </style>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="title">Housing Affordability</div>
+    <div id="slider"></div>
+    <div id="legend"></div>
+
+
+    <!-- include cartodb.js library -->
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <script>
+
+      var yearStart = 2014;
+      var minIdx = 0;
+      var maxIdx = 2;
+
+      function changeLegend(idx) {
+        $('#legend').html('Year: ' + (yearStart + idx));
+      }
+
+      function showSubLayer(layer, idx) {
+        for (var i = 0; i < layer.getSubLayerCount(); i++) {
+          if (i === idx) {
+            layer.getSubLayer(i).show();
+          } else {
+            layer.getSubLayer(i).hide();
+          }
+        }
+      }
+
+      function addTimeSlider(layer) {
+        $("#slider").slider({
+          min: minIdx,
+          max: maxIdx,
+          value: minIdx,
+          slide: function(event, ui) {
+            // give feedback to the user on slide change
+            console.log(ui.value);
+            showSubLayer(layer, ui.value)
+            changeLegend(ui.value);
+          },
+        });
+        showSubLayer(layer, minIdx);
+        changeLegend(minIdx);
+      }
+
+      function main() {
+
+        var map = new L.Map('map', {
+          zoomControl: false,
+          center: [36.66841891894786, -96.96533203125],
+          zoom: 3
+        });
+
+        L.tileLayer('http://{s}.api.cartocdn.com/base-light/{z}/{x}/{y}.png', {
+          attribution: 'CartoDB · OSM data'
+        }).addTo(map);
+
+        cartodb.createLayer(map, 'https://larryxu.carto.com/api/v2/viz/51bc7dc4-a630-11e6-8f2b-0e05a8b3e3d7/viz.json')
+         .addTo(map)
+         .on('done', function(layer) {
+           // add time slider on change
+           addTimeSlider(layer);
+        }).on('error', function() {
+          cartodb.log.log("some error occurred");
+        });
+      }
+
+      // you could use $(window).load(main);
+      window.onload = main;
+    </script>
+  </body>
+</html>
