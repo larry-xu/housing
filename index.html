@@ -35,8 +35,8 @@
         left: 40px;
       }
     </style>
-    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
   </head>
   <body>
     <div id="map"></div>
@@ -46,8 +46,8 @@
 
 
     <!-- include cartodb.js library -->
-    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <script>
 
@@ -88,16 +88,15 @@
       function main() {
 
         var map = new L.Map('map', {
-          zoomControl: false,
           center: [36.66841891894786, -96.96533203125],
           zoom: 3
         });
 
-        L.tileLayer('http://{s}.api.cartocdn.com/base-light/{z}/{x}/{y}.png', {
+        L.tileLayer('//cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
           attribution: 'CartoDB · OSM data'
         }).addTo(map);
 
-        cartodb.createLayer(map, 'https://larryxu.carto.com/api/v2/viz/51bc7dc4-a630-11e6-8f2b-0e05a8b3e3d7/viz.json')
+        cartodb.createLayer(map, '//larryxu.carto.com/api/v2/viz/51bc7dc4-a630-11e6-8f2b-0e05a8b3e3d7/viz.json')
          .addTo(map)
          .on('done', function(layer) {
            // add time slider on change
